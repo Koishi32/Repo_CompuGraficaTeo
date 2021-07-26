@@ -1,7 +1,7 @@
-# Blender MTL File: 'untitled.blend'
-# Material Count: 3
+# Blender MTL File: 'Org.blend'
+# Material Count: 16
 
-newmtl Material.001
+newmtl Default_OBJ
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,9 +10,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd banqueta.jpg
+map_Kd Houses\\House1\\house-low-rus_obj\\house-low-texture.jpg
 
-newmtl Material.002
+newmtl Default_OBJ.001
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -21,9 +21,119 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd Houses\\House4\\house1.bmp
+
+newmtl Default_OBJ.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Extra\\Street_Lamp_SM.png
+
+newmtl Farm_house_D
+Ns 9.849201
+Ka 1.000000 1.000000 1.000000
+Kd 0.698000 0.698000 0.698000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd Houses\\House2\\textures\\Farm_house_D.jpg
+
+newmtl House
+Ns 96.078443
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Houses\\House3\\House1.png
+
+newmtl House_House
+Ns 96.078443
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Houses\\House3\\House1.png
+
+newmtl House_Side_D
+Ns 9.849201
+Ka 1.000000 1.000000 1.000000
+Kd 0.698000 0.698000 0.698000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd Houses\\House2\\textures\\House_Side_D.jpg
+
+newmtl Material.004
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd basic_grout_color_red.jpg
+
+newmtl Material.005
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd asphalt_uniform_rough.jpg
+
+newmtl Material.008
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd basic_grout_color_red.jpg
+
+newmtl Material__46
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd Brick_Herringbone_Gray.png
+
+newmtl Material__47
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
 map_Kd SiteWork.Planting.Grass.StAugustine1.jpg
 
-newmtl Material__56
+newmtl Material__56.001
 Ns 10.000002
 Ka 1.000000 1.000000 1.000000
 Kd 0.588000 0.588000 0.588000
@@ -33,3 +143,37 @@ Ni 1.500000
 d 1.000000
 illum 1
 map_Kd asphalt_uniform_rough.jpg
+
+newmtl Roof_D
+Ns 9.849201
+Ka 1.000000 1.000000 1.000000
+Kd 0.698000 0.698000 0.698000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd Houses\\House2\\textures\\Roof_D.jpg
+
+newmtl SpruceBranch
+Ns 96.078443
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 1
+map_Kd Tree\\tree1\\Spruce branches.png
+map_d Tree\\tree1\\Spruce branches.png
+
+newmtl SpruceTrunk
+Ns 96.078443
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd Tree\\tree1\\Spruce trunk.jpeg
