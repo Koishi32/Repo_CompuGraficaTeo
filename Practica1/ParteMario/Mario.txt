@@ -128,8 +128,7 @@ Variables necesarias
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // posiciones
-//float x = 0.0f;
-//float y = 0.0f;
+
 float	movAuto_x = 0.0f,
 movAuto_z = 0.0f,
 movAuto_y = 0.0f,
