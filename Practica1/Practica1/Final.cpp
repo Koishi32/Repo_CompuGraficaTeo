@@ -338,7 +338,7 @@ int main()
 
 	// load models
 	// -----------
-	Model piso("resources/objects/piso/piso.obj");
+	Model piso("resources/esc/EscenarioLigero.obj");
 	Model botaDer("resources/objects/Personaje/bota.obj");
 	Model piernaDer("resources/objects/Personaje/piernader.obj");
 	Model piernaIzq("resources/objects/Personaje/piernader.obj");
@@ -493,15 +493,15 @@ int main()
 		casaOLD.Draw(staticShader);*/
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.2f));
+		model = glm::translate(model, glm::vec3(0.0f, -24.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f,1.0f,2.0f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
-		
+		/*
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -70.0f));
 		model = glm::scale(model, glm::vec3(5.0f));
 		staticShader.setMat4("model", model);
-		casaVieja.Draw(staticShader);
+		casaVieja.Draw(staticShader);*/
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Carro
