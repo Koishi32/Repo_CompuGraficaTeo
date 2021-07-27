@@ -60,8 +60,7 @@ glm::vec3 lightPosition(0.0f, 4.0f, -10.0f);
 glm::vec3 lightDirection(0.0f, -1.0f, -1.0f);
 
 // posiciones
-//float x = 0.0f;
-//float y = 0.0f;
+
 float	movAuto_x = 0.0f,
 movAuto_z = 0.0f,
 movAuto_y = 0.0f,
@@ -231,7 +230,7 @@ void animate(void)
 			movAuto_z = 100 + (100.0f*cos((orienta*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
 			giroLlantas += 3.0f;
 			orienta -= 1.0f;
-			if (movAuto_z > 155.0f)
+			if (movAuto_z > 125.0f)
 			{
 				avanza = true;
 				sube = true;
@@ -245,7 +244,7 @@ void animate(void)
 			movAuto_z -= 1.0f;
 			giroLlantas += 3.0f;
 			//orienta -= 1.0f;
-			if (movAuto_z < 145.0f)
+			if (movAuto_z < 100.0f)
 			{
 				avanza = true;
 				sube = false;
@@ -260,7 +259,7 @@ void animate(void)
 			movAuto_z += 1.0f;
 			giroLlantas += 3.0f;
 			//orienta -= 1.0f;
-			if (movAuto_z > 175.0f) {
+			if (movAuto_z > 125.0f) {
 				avanza = true;
 				sube = true;
 				tramo = true;
@@ -598,7 +597,7 @@ int main()
 		// Carro
 		// -------------------------------------------------------------------------------------------------------------------------
 		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(-500.0f + movAuto_x, 0.0f + movAuto_y, 0.0f + movAuto_z));
+		model = glm::translate(model, glm::vec3(-500.0f + movAuto_x, 0.0f + movAuto_y, -100.0f + movAuto_z));
 		tmp = model = glm::rotate(model, glm::radians(orienta), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		staticShader.setMat4("model", model);
