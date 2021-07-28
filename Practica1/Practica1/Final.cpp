@@ -63,16 +63,20 @@ glm::vec3 lightDirection(0.0f, -1.0f, 1.0f);
 //float x = 0.0f;
 //float y = 0.0f;
 float	movAuto_x = 0.0f,
-		movAuto_z = 0.0f,
-		orienta = 0.0f,
-		giroLlantas = 0.0f;
+movAuto_z = 0.0f,
+movAuto_y = 0.0f,
+orienta = 180.0f,
+giroLlantas = 0.0f;
 bool	animacion = false,
-		recorrido1 = true,
-		recorrido2 = false,
-		recorrido3 = false,
-		recorrido4 = false;
+recorrido1 = true,
+recorrido2 = false,
+recorrido3 = false,
+recorrido4 = false,
+avanza = false,
+tramo = false,
+sube = false;
 
-
+float rotacionCoche = 90.0f;
 //Keyframes (Manipulación y dibujo)
 float	posX = 0.0f,
 		posY = 0.0f,
@@ -194,66 +198,74 @@ void animate(void)
 	//float rateZ;
 	if (animacion)
 	{
-		
-		switch (paso)
+		//avanza1
+		if ((avanza == false) && (sube == false) && (tramo == false))
+
 		{
-		case (0):
-			if (movAuto_z >= -200.0f) {
-				movAuto_z += -3.0f;
-				orienta = 180;
-			}
-			else{
-				paso = 1;
-				//movAuto_z = 0.0f;
-			}
-		break;
-		case (1):
-			if (movAuto_x <= 300.0f) {
-				movAuto_x += 5.0f;
-				orienta = 90;
-			}
-			else {
-				paso = 2;
-				//movAuto_x = 0.0f;
-			}
-		break;
-		case (2):
-			if (movAuto_z <= 200.0f) {
-				movAuto_z += 3.0f;
-				orienta = 0;
-			}
-			else {
-				paso = 3;
-				//movAuto_z = 0.0f;
-			}
-		break;
-		case (3):
-			if (movAuto_x >= 0.0f) {
-				movAuto_x += -3.0f;
-				orienta = -90;
-			}
-			else {
-				paso = 4;
-				//movAuto_x = 0.0f;
-			}
-		break;
-		case (4):
-			if (movAuto_z <= 350.0f) {
-				movAuto_z += 3.0f;
-				orienta = 0;
-			}
-			else {
-				paso = 5;
-				//movAuto_z = 0.0f;
-				//movAuto_x = 0.0f;
-			}
-		break;
-		default:
-			break;
+			movAuto_x += 2.0f;
+			giroLlantas += 4.0f;
+			orienta = 90.0f;
+			if (movAuto_x > 150.0f)
+				sube = true;
 		}
-		
+		//giro
+		if ((avanza == false) && (sube == true) && (tramo == false))
+		{
+
+			movAuto_x = 150 + (100.0f*sin((orienta*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
+			movAuto_z = 100 + (100.0f*cos((orienta*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
+			giroLlantas += 3.0f;
+			orienta -= 1.0f;
+			if (movAuto_z > 125.0f)
+			{
+				avanza = true;
+				sube = true;
+				tramo = false;
+			}
+		}
+		//estaciona p1
+		if ((avanza == true) && (sube == true) && (tramo == false))
+		{
+			movAuto_x += 0.5f;
+			movAuto_z -= 1.0f;
+			giroLlantas += 3.0f;
+			//orienta -= 1.0f;
+			if (movAuto_z < 100.0f)
+			{
+				avanza = true;
+				sube = false;
+				tramo = false;
+			}
+		}
+
+		//estaciona p2
+		if ((sube == false) && (avanza == true) && (tramo == false))
+		{
+			movAuto_x -= 1.5f;
+			movAuto_z += 1.0f;
+			giroLlantas += 3.0f;
+			//orienta -= 1.0f;
+			if (movAuto_z > 125.0f) {
+				avanza = true;
+				sube = true;
+				tramo = true;
+			}
+		}
+
+		//detener
+		if ((avanza == true) && (sube == true) && (tramo == true))
+		{
+			movAuto_x -= 1.0f;
+			giroLlantas += 4.0f;
+			orienta = 270.0f;
+			if (movAuto_x < 420.0f) {
+				animacion = false;
+				paso = 5;
+			}
+			
+			
+		}
 	}
-	
 }
 
 void getResolution()
@@ -338,7 +350,7 @@ int main()
 
 	// load models
 	// -----------
-	Model piso("resources/objects/piso/piso.obj");
+	Model piso("resources/esc/EscenarioLigero.obj");
 	Model botaDer("resources/objects/Personaje/bota.obj");
 	Model piernaDer("resources/objects/Personaje/piernader.obj");
 	Model piernaIzq("resources/objects/Personaje/piernader.obj");
@@ -346,8 +358,8 @@ int main()
 	Model brazoDer("resources/objects/Personaje/brazoder.obj");
 	Model brazoIzq("resources/objects/Personaje/brazoizq.obj");
 	Model cabeza("resources/objects/Personaje/cabeza.obj");
-	//Model carro("resources/objects/lambo/carroceria.obj");
-	//Model llanta("resources/objects/lambo/Wheel.obj");
+	Model carro("resources/objects/lambo/carroceria.obj");
+	Model llanta("resources/objects/lambo/Wheel.obj");
 	Model casaVieja("resources/objects/casa/OldHouse.obj");
 	//Model cubo("resources/objects/cubo/cube02.obj");
 	//Model casaDoll("resources/objects/casa/DollHouse.obj");
@@ -493,29 +505,30 @@ int main()
 		casaOLD.Draw(staticShader);*/
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.2f));
+		model = glm::translate(model, glm::vec3(0.0f, -24.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.7f,1.0f,2.7f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
-		
+		/*
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -70.0f));
 		model = glm::scale(model, glm::vec3(5.0f));
 		staticShader.setMat4("model", model);
-		casaVieja.Draw(staticShader);
+		casaVieja.Draw(staticShader);*/
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Carro
 		// -------------------------------------------------------------------------------------------------------------------------
-		/*model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(15.0f + movAuto_x, -1.0f, movAuto_z));
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-200.0f + movAuto_x, -24.0f + movAuto_y,-55.0f + movAuto_z));
 		tmp = model = glm::rotate(model, glm::radians(orienta), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.1f,0.1f,0.1f));
 		staticShader.setMat4("model", model);
 		carro.Draw(staticShader);
 
 		model = glm::translate(tmp, glm::vec3(8.5f, 2.5f, 12.9f));
-		model = glm::rotate(model, glm::radians(giroLlantas), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::rotate(model, glm::radians(giroLlantas), glm::vec3(1.0f, 0.0f, 0.0f));
+
 		staticShader.setMat4("model", model);
 		llanta.Draw(staticShader);	//Izq delantera
 
@@ -528,16 +541,16 @@ int main()
 
 		model = glm::translate(tmp, glm::vec3(-8.5f, 2.5f, -14.5f));
 		model = glm::rotate(model, glm::radians(giroLlantas), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
 		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		staticShader.setMat4("model", model);
 		llanta.Draw(staticShader);	//Der trasera
 
 		model = glm::translate(tmp, glm::vec3(8.5f, 2.5f, -14.5f));
 		model = glm::rotate(model, glm::radians(giroLlantas), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
 		staticShader.setMat4("model", model);
-		llanta.Draw(staticShader);	//Izq trase*/
+		llanta.Draw(staticShader);
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Personaje
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -679,18 +692,28 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 		if (IniciaReco) {
 			paso = 0;
 			animacion = true;
-			movAuto_z = 0.0f;
-			movAuto_x = 0.0f;
-			IniciaReco = false;
+			//movAuto_z = 0.0f;
+			//movAuto_x = 0.0f;
+			IniciaReco = true;
+			
 		}
 	}
 
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
 		if (paso == 5) {
-			IniciaReco = true;
+			animacion = false;
+			recorrido1 = true;
+			recorrido2 = false;
+			recorrido3 = false;
+			recorrido4 = false;
+			avanza = false;
+			tramo = false;
+			sube = false;
 			movAuto_z = 0.0f;
 			movAuto_x = 0.0f;
+			movAuto_y = 0;
 			paso = 0;
+			orienta = 90.0f;
 			animacion = false;
 		}
 	}
