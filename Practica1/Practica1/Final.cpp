@@ -26,7 +26,7 @@
 #include <Skybox.h>
 #include <iostream>
 
-//#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "winmm.lib")
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
