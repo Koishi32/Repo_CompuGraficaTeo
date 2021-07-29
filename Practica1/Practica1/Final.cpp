@@ -459,7 +459,7 @@ void animate(void)
 	}
 	//ANIMACION AVE
 	AVE_X = 0 + (100.0f*sin((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
-	AVE_Y = 0 + (10.0f*sin((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
+	AVE_Y = 0 + (30.0f*sin((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
 	AVE_Z = 0 + (100.0f*cos((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
 	GIROROT_AVE -= 0.2f;
 }
@@ -954,7 +954,7 @@ int main()
 		// Termina Escenario
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Aguila
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f +AVE_X, 45.0f+AVE_Y, 0.0f+AVE_Z));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f +AVE_X, 70.0f+AVE_Y, 0.0f+AVE_Z));
 		model = glm::rotate(model, glm::radians(ROT_CUERPO_AVE_X), glm::vec3(0.0f, 0.0f, 1.0));
 		tmp = model = glm::rotate(model, glm::radians(GIROROT_AVE), glm::vec3(0.0f, 1.0f, 0.0));
 		staticShader.setMat4("model", model);
