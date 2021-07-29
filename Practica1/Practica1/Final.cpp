@@ -463,10 +463,10 @@ int main()
 		staticShader.setVec3("dirLight.direction", glm::vec3(luzSolX, luzSolY, 0.0f));
 		staticShader.setVec3("dirLight.ambient", glm::vec3(0.01f, 0.01f, 0.01f)); //color de la luz principal
 		if (noche == false )
-			staticShader.setVec3("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+			staticShader.setVec3("dirLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
 		if (noche == true )
 			staticShader.setVec3("dirLight.diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setVec3("dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		staticShader.setVec3("dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
 
 		staticShader.setVec3("pointLight[0].position", glm::vec3(-84.0f, 24.0f, 79.0f));
 		staticShader.setVec3("pointLight[0].ambient", glm::vec3(1.0f, 1.0f, 0.4));
