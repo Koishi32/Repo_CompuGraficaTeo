@@ -91,6 +91,9 @@ posZ = 0.0f,
 rotRodIzq = 0.0f,
 giroMonito = 0.0f,
 movBrazoIzq = 0.0f;
+
+float GIROROT_AVE=0.0f;
+
 float	incX = 0.0f,
 incY = 0.0f,
 incZ = 0.0f,
@@ -130,6 +133,7 @@ AVE_Y = 0.0f,
 AVE_Z = 0.0f,
 ROTOALA_DER = 0.0f,
 ROT_CUERPO_AVE = 0.0f,
+ROT_CUERPO_AVE_X = 0.0f,
 ROTALA_IZQ = 0.0f;
 //AVE INCREMENTO
 float	AVE_X_INC = 0.0f,
@@ -137,8 +141,9 @@ AVE_Y_INC = 0.0f,
 AVE_Z_INC = 0.0f,
 ROTOALA_DER_INC = 0.0f,
 ROT_CUERPO_AVE_INC = 0.0f,
+ROT_CUERPO_AVE_X_INC = 0.0f,
 ROTALA_IZQ_INC = 0.0f;
-#define CUADROS_MAXIMOS_AVE 6
+#define CUADROS_MAXIMOS_AVE 9
 int interpoladasMaximas_AVE = 60;
 int pasoActualAVE = 0;
 typedef struct _frame_AVE
@@ -150,7 +155,8 @@ typedef struct _frame_AVE
 		AVE_Z = 0.0f,
 		ROTOALA_DER = 0.0f,
 		ROT_CUERPO_AVE = 0.0f,
-		ROTALA_IZQ = 0.0f;
+		ROTALA_IZQ = 0.0f,
+		ROT_CUERPO_AVE_X = 0.0f;
 
 }FRAMEX_AVE;
 
@@ -158,7 +164,7 @@ typedef struct _frame_AVE
 FRAMEX_AVE cuadroClaveAVE[CUADROS_MAXIMOS_AVE];
 bool AVE_FLY = false;
 int playIndiceAVE = 0;
-int indiceCuadroAVE = 11;
+int indiceCuadroAVE = CUADROS_MAXIMOS_AVE;
 //Para resetear los cuadros clave de tipo corriendo
 void resetearElementosAVE(void)
 {
@@ -169,6 +175,8 @@ void resetearElementosAVE(void)
 	ROTOALA_DER = cuadroClaveAVE[0].ROTOALA_DER;
 	ROT_CUERPO_AVE = cuadroClaveAVE[0].ROTALA_IZQ;
 	ROTALA_IZQ = cuadroClaveAVE[0].ROT_CUERPO_AVE;
+
+	ROT_CUERPO_AVE_X= cuadroClaveAVE[0].ROT_CUERPO_AVE_X;
 }
 
 void interpolacionAVECorrer(void)
@@ -177,25 +185,26 @@ void interpolacionAVECorrer(void)
 	AVE_Y_INC = (cuadroClaveAVE[playIndiceAVE + 1].AVE_Y - cuadroClaveAVE[playIndiceAVE].AVE_Y) / interpoladasMaximas_AVE;
 	AVE_Z_INC = (cuadroClaveAVE[playIndiceAVE + 1].AVE_Z - cuadroClaveAVE[playIndiceAVE].AVE_Z) / interpoladasMaximas_AVE;
 
-	ROTOALA_DER_INC = (cuadroClaveAVE[playIndiceAVE + 1].ROTOALA_DER - cuadroClaveAVE[playIndiceAVE].ROTALA_IZQ) / interpoladasMaximas_AVE;
+
+	ROTOALA_DER_INC = (cuadroClaveAVE[playIndiceAVE + 1].ROTOALA_DER - cuadroClaveAVE[playIndiceAVE].ROTOALA_DER) / interpoladasMaximas_AVE;
 	ROT_CUERPO_AVE_INC = (cuadroClaveAVE[playIndiceAVE + 1].ROT_CUERPO_AVE - cuadroClaveAVE[playIndiceAVE].ROT_CUERPO_AVE) / interpoladasMaximas_AVE;
 	ROTALA_IZQ_INC = (cuadroClaveAVE[playIndiceAVE + 1].ROTALA_IZQ - cuadroClaveAVE[playIndiceAVE].ROTALA_IZQ) / interpoladasMaximas_AVE;
-
+	ROT_CUERPO_AVE_X_INC = (cuadroClaveAVE[playIndiceAVE + 1].ROT_CUERPO_AVE_X - cuadroClaveAVE[playIndiceAVE].ROT_CUERPO_AVE_X) / interpoladasMaximas_AVE;
 }
 
 void AVE_VOLANDO(void)
 {
-	if (AVE_FLY)
-	{
+	
 		if (pasoActualAVE >= interpoladasMaximas_AVE) //end of animation between frames?
 		{
 			playIndiceAVE++;
-			if (playIndiceAVE > indiceCuadroAVE - 2)	//end of total animation?
+			if (playIndiceAVE > indiceCuadroAVE)	//end of total animation?
 			{
 				std::cout << "Animation ended" << std::endl;
 				//printf("termina anim\n");
 				playIndiceAVE = 0;
-				AVE_FLY = false;
+				resetearElementosAVE();
+				//AVE_FLY = false;
 			}
 			else //Next frame interpolations
 			{
@@ -215,9 +224,10 @@ void AVE_VOLANDO(void)
 			ROT_CUERPO_AVE += ROT_CUERPO_AVE_INC;
 			ROTALA_IZQ += ROTALA_IZQ_INC;
 
+			ROT_CUERPO_AVE_X += ROT_CUERPO_AVE_X_INC;
 			pasoActualAVE++;
 		}
-	}
+	
 }
 
 //ANIMACION TIPO CAMINANDO
@@ -333,14 +343,7 @@ int paso = 0;
 void animate(void)
 {
 
-	/*
-	movAuto_z -= 3.0f;
-			giroLlantas -= 3.0f;
-			orienta = 180;
-	*/
-	//Vehículo
-	//float rateX;
-	//float rateZ;
+	//Luces
 	if (luzSolY >= -0.1)
 		prenderFaros = true;
 	if (luzSolY <= -0.1)
@@ -383,6 +386,7 @@ void animate(void)
 		}
 
 	}
+	//COCHE ANIMAICON
 	if (animacion)
 	{
 		//avanza1
@@ -453,6 +457,11 @@ void animate(void)
 
 		}
 	}
+	//ANIMACION AVE
+	AVE_X = 0 + (100.0f*sin((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
+	AVE_Y = 0 + (10.0f*sin((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
+	AVE_Z = 0 + (100.0f*cos((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
+	GIROROT_AVE -= 0.2f;
 }
 
 void getResolution()
@@ -568,7 +577,7 @@ int main()
 	cuadroClave[0].giroCuerpo = -90.0f;
 	cuadroClave[0].giroTorso = 0.0f;
 
-	cuadroClave[1].posXt = -50.0f;
+	cuadroClave[1].posXt =-20.0f;
 	cuadroClave[1].posYt = 0.0f;
 	cuadroClave[1].posZt = 0.0f;
 	cuadroClave[1].rotPiernaIzq = -20.0f;
@@ -581,7 +590,7 @@ int main()
 	cuadroClave[1].giroCuerpo = -90.0f;
 	cuadroClave[1].giroTorso = 0.0f;
 
-	cuadroClave[2].posXt = -125.0f;
+	cuadroClave[2].posXt = -40.0f;
 	cuadroClave[2].posYt = 0.0f;
 	cuadroClave[2].posZt = 0.0f;
 	cuadroClave[2].rotPiernaIzq = 30.0f;
@@ -594,10 +603,10 @@ int main()
 	cuadroClave[2].giroCuerpo = -90.0f;
 	cuadroClave[2].giroTorso = 0.0f;
 
-	cuadroClave[3].posXt = -225.0f;
+	cuadroClave[3].posXt = -60.0f;
 	cuadroClave[3].posYt = 0.0f;
 	cuadroClave[3].posZt = 0.0f;
-	cuadroClave[3].rotPiernaIzq = -40.0f;
+	cuadroClave[3].rotPiernaIzq = -120.0f;
 	cuadroClave[3].rotPiernaDer = 40.0f;
 	cuadroClave[3].rotBrazoIzq = 40.0f;
 	cuadroClave[3].rotManoIzq = 85.0f;
@@ -607,7 +616,7 @@ int main()
 	cuadroClave[3].giroCuerpo = -90.0f;
 	cuadroClave[3].giroTorso = 0.0f;
 
-	cuadroClave[4].posXt = -350.0f;
+	cuadroClave[4].posXt = -80.0f;
 	cuadroClave[4].posYt = 0.0f;
 	cuadroClave[4].posZt = 0.0f;
 	cuadroClave[4].rotPiernaIzq = 40.0f;
@@ -620,7 +629,7 @@ int main()
 	cuadroClave[4].giroCuerpo = -90.0f;
 	cuadroClave[4].giroTorso = 0.0f;
 
-	cuadroClave[5].posXt = -500.0f;
+	cuadroClave[5].posXt = -100.0f;
 	cuadroClave[5].posYt = 0.0f;
 	cuadroClave[5].posZt = 0.0f;
 	cuadroClave[5].rotPiernaIzq = -40.0f;
@@ -633,7 +642,7 @@ int main()
 	cuadroClave[5].giroCuerpo = -90.0f;
 	cuadroClave[5].giroTorso = 0.0f;
 
-	cuadroClave[6].posXt = -600.0f;
+	cuadroClave[6].posXt = -110.0f;
 	cuadroClave[6].posYt = 0.0f;
 	cuadroClave[6].posZt = 0.0f;
 	cuadroClave[6].rotPiernaIzq = 30.0f;
@@ -646,7 +655,7 @@ int main()
 	cuadroClave[6].giroCuerpo = -90.0f;
 	cuadroClave[6].giroTorso = 0.0f;
 
-	cuadroClave[7].posXt = -675.0f;
+	cuadroClave[7].posXt = -120.0f;
 	cuadroClave[7].posYt = 0.0f;
 	cuadroClave[7].posZt = 0.0f;
 	cuadroClave[7].rotPiernaIzq = 0.0f;
@@ -659,7 +668,7 @@ int main()
 	cuadroClave[7].giroCuerpo = -90.0f;
 	cuadroClave[7].giroTorso = 20.0f;
 
-	cuadroClave[8].posXt = -675.0f;
+	cuadroClave[8].posXt = -120.0f;
 	cuadroClave[8].posYt = 0.0f;
 	cuadroClave[8].posZt = 0.0f;
 	cuadroClave[8].rotPiernaIzq = 0.0f;
@@ -672,7 +681,7 @@ int main()
 	cuadroClave[8].giroCuerpo = -90.0f;
 	cuadroClave[8].giroTorso = 0.0f;
 
-	cuadroClave[9].posXt = -675.0f;
+	cuadroClave[9].posXt = -120.0f;
 	cuadroClave[9].posYt = 0.0f;
 	cuadroClave[9].posZt = 0.0f;
 	cuadroClave[9].rotPiernaIzq = 0.0f;
@@ -685,7 +694,7 @@ int main()
 	cuadroClave[9].giroCuerpo = -90.0f;
 	cuadroClave[9].giroTorso = 20.0f;
 
-	cuadroClave[10].posXt = -675.0f;
+	cuadroClave[10].posXt = -120.0f;
 	cuadroClave[10].posYt = 0.0f;
 	cuadroClave[10].posZt = 0.0f;
 	cuadroClave[10].rotPiernaIzq = 0.0f;
@@ -694,7 +703,7 @@ int main()
 	cuadroClave[10].rotManoIzq = 0.0f;
 	cuadroClave[10].rotBrazoDer = 0.0f;
 	cuadroClave[10].rotManoDer = 0;
-	cuadroClave[10].rotCabeza = 0.0f;
+	cuadroClave[10].rotCabeza = 0.0f; 
 	cuadroClave[10].giroCuerpo = -90.0f;
 	cuadroClave[10].giroTorso = 0.0f;
 
@@ -702,6 +711,40 @@ int main()
 	glm::mat4 tmp2 = glm::mat4(1.0f);
 	glm::mat4 tmp3 = glm::mat4(1.0f);
 	glm::mat4 tmp4 = glm::mat4(1.0f);
+
+	/// SET UPP FRAMES AVE
+	cuadroClaveAVE[0].ROTOALA_DER = 25.0f;
+	cuadroClaveAVE[0].ROTALA_IZQ = 25.0f;
+	cuadroClaveAVE[0].ROT_CUERPO_AVE_X = 15.0f;
+
+	cuadroClaveAVE[1].ROTOALA_DER = 20.0f;
+	cuadroClaveAVE[1].ROTALA_IZQ = 20.0f;
+	cuadroClaveAVE[1].ROT_CUERPO_AVE_X = 5.0f;
+	
+	cuadroClaveAVE[2].ROTOALA_DER = 10.0f;
+	cuadroClaveAVE[2].ROTALA_IZQ = 10.0f;
+	cuadroClaveAVE[2].ROT_CUERPO_AVE_X = 0.0f;
+
+	cuadroClaveAVE[3].ROTOALA_DER = -10.0f;
+	cuadroClaveAVE[3].ROTALA_IZQ = -10.0f;
+	cuadroClaveAVE[3].ROT_CUERPO_AVE_X = -10.0f;
+
+	cuadroClaveAVE[4].ROTOALA_DER = 5.0f;
+	cuadroClaveAVE[4].ROTALA_IZQ = 5.0f;
+	cuadroClaveAVE[4].ROT_CUERPO_AVE_X = -5.0f;
+	
+	cuadroClaveAVE[5].ROTOALA_DER = 10.0f;
+	cuadroClaveAVE[5].ROTALA_IZQ = 10.0f;
+	cuadroClaveAVE[5].ROT_CUERPO_AVE_X = 0.0f;
+
+	cuadroClaveAVE[6].ROTOALA_DER = 20.0f;
+	cuadroClaveAVE[6].ROTALA_IZQ =20.0f;
+	cuadroClaveAVE[6].ROT_CUERPO_AVE_X = 5.0f;
+	
+	cuadroClaveAVE[7].ROTOALA_DER = 25.0f;
+	cuadroClaveAVE[7].ROTALA_IZQ = 25.0f;
+	cuadroClaveAVE[7].ROT_CUERPO_AVE_X = 15.0f;
+	
 
 	//Carga del soundtrack
 	bool soundtrack = PlaySound("sounds/soundtrack.wav", NULL, SND_ASYNC);
@@ -716,6 +759,9 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		tipoCorriendo();
+		AVE_VOLANDO();
+
+		
 		skyboxShader.setInt("skybox", 0);
 
 		// per-frame time logic
@@ -846,7 +892,7 @@ int main()
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -24.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(2.7f, 1.0f, 2.7f));
+		model = glm::scale(model, glm::vec3(2.7f, 1.2f, 2.7f));
 		staticShader.setMat4("model", model);
 		piso.Draw(staticShader);
 		/*
@@ -908,31 +954,29 @@ int main()
 		// Termina Escenario
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Aguila
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 12.0f, 0.0f));
-		model = glm::translate(model, glm::vec3(0.0f, 2.5f, 0));
-		tmp = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f +AVE_X, 45.0f+AVE_Y, 0.0f+AVE_Z));
+		model = glm::rotate(model, glm::radians(ROT_CUERPO_AVE_X), glm::vec3(0.0f, 0.0f, 1.0));
+		tmp = model = glm::rotate(model, glm::radians(GIROROT_AVE), glm::vec3(0.0f, 1.0f, 0.0));
 		staticShader.setMat4("model", model);
 		cuerpo.Draw(staticShader);
 		//Ala derecho 
-		model = glm::translate(tmp, glm::vec3(0.8f, -2.5f, 0.0f));
-		model = glm::translate(model, glm::vec3(-0.75f, 2.5f, 0));
-		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(tmp, glm::vec3(0.3f,-0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(ROTOALA_DER), glm::vec3(0.0f, 0.0f,1.0f));
 		staticShader.setMat4("model", model);
 		AlaDerecha.Draw(staticShader);
 
 		//Ala izquierdo 
-		model = glm::translate(tmp, glm::vec3(-0.85f, -2.5f, 0.0f));
-		model = glm::translate(model, glm::vec3(0.75f, 2.5f, 0));
-		model = glm::rotate(model, glm::radians(movBrazoIzq), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(tmp, glm::vec3(-0.4f, -0.1f, 0.0f));
+		model = glm::rotate(model, glm::radians(ROTALA_IZQ), glm::vec3(0.0f, 0.0f,1.0f));
 		staticShader.setMat4("model", model);
 		AlaIzquierda.Draw(staticShader);
 
 
 		/// ------------------
 		//DRAWN TIPO 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(8.0, -0.45f, -11.0f));
-		model = glm::scale(model, glm::vec3(0.016f));
-		model = glm::translate(model, glm::vec3(posX, posY, posZ));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(120.0+ posXt, -16.0f+posYt, -140.0f+posZt));
+		model = glm::scale(model, glm::vec3(0.085f));
+		//model = glm::translate(model, glm::vec3(posX, posY, posZ));
 		tmp1 = model = glm::rotate(model, glm::radians(giroCuerpo), glm::vec3(0.0f, 1.0f, 0.0));
 		tmp4 = model = glm::rotate(model, glm::radians(giroTorso), glm::vec3(1.0f, 0.0f, 0.0));
 		staticShader.setMat4("model", model);
