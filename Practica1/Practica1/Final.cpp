@@ -489,6 +489,17 @@ int main()
 			staticShader.setFloat("pointLight[1].quadratic", 0.0007f); //intensidad
 		if(prenderFaros == false)
 			staticShader.setFloat("pointLight[1].quadratic", 100.0f); //intensidad
+		
+		staticShader.setVec3("pointLight[2].position", glm::vec3(38.0f, 24.0f, -73.0f));
+		staticShader.setVec3("pointLight[2].ambient", glm::vec3(1.0f, 1.0f, 0.4f));
+		staticShader.setVec3("pointLight[2].diffuse", glm::vec3(1.0f, 1.0f, 0.4f));
+		staticShader.setVec3("pointLight[2].specular", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setFloat("pointLight[2].constant", 1.0f);
+		staticShader.setFloat("pointLight[2].linear", 0.014f);
+		if(prenderFaros == true)
+			staticShader.setFloat("pointLight[2].quadratic", 0.0007f); //intensidad
+		if(prenderFaros == false)
+			staticShader.setFloat("pointLight[2].quadratic", 100.0f); //intensidad
 
 		staticShader.setFloat("material_shininess", 32.0f);
 
