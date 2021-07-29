@@ -66,6 +66,9 @@ float	movAuto_x = 0.0f,
 movAuto_z = 0.0f,
 movAuto_y = 0.0f,
 orienta = 180.0f,
+luzSolY = 0.0f,
+luzSolX = -1.0f,
+faroDescomuesto = 0.0f,
 giroLlantas = 0.0f;
 bool	animacion = false,
 recorrido1 = true,
@@ -74,6 +77,9 @@ recorrido3 = false,
 recorrido4 = false,
 avanza = false,
 tramo = false,
+cicloFaro = false,
+noche = false,
+prenderFaros = false,
 sube = false;
 
 float rotacionCoche = 90.0f;
@@ -196,6 +202,48 @@ void animate(void)
 	//Vehículo
 	//float rateX;
 	//float rateZ;
+	if (luzSolY >= -0.1)
+		prenderFaros = true;
+	if (luzSolY <= -0.1)
+		prenderFaros = false;
+	if (luzSolX <= 0.0f && noche == false)
+	{
+		luzSolX += 0.002f;
+		luzSolY -= 0.002f;
+	}
+	else
+	{
+		if (luzSolY <= 0.0f && noche == false)
+		{
+			luzSolX += 0.002f;
+			luzSolY += 0.002f;
+		}
+		else {
+			noche = true;
+			if (luzSolX >= -1.0f && noche == true) {
+				luzSolY = 100.0f;
+				luzSolX -= 0.002f;
+				if (faroDescomuesto >= 0.0f && cicloFaro == true) {
+					faroDescomuesto -= 0.03f;
+				}
+				else {
+					cicloFaro = false;
+					if (faroDescomuesto <= 1.0f && cicloFaro == false) {
+						faroDescomuesto += 0.05f;
+					}
+					else
+						cicloFaro = true;
+				}
+			}
+			else {
+				noche = false;
+				cicloFaro = false;
+				faroDescomuesto = 0.0f;
+				luzSolY = 0.0f;
+			}
+		}
+
+	}
 	if (animacion)
 	{
 		//avanza1
@@ -361,16 +409,20 @@ int main()
 	Model carro("resources/objects/lambo/carroceria.obj");
 	Model llanta("resources/objects/lambo/Wheel.obj");
 	Model casaVieja("resources/objects/casa/OldHouse.obj");
+	
 	//Model cubo("resources/objects/cubo/cube02.obj");
 	//Model casaDoll("resources/objects/casa/DollHouse.obj");
 	//Model casaOLD("resources/objects/CasaVieja/casaVieja2.obj");
 	/*
 	ModelAnim animacionPersonaje("resources/objects/Personaje1/PersonajeBrazo.dae");
 	animacionPersonaje.initShaders(animShader.ID);
-
 	ModelAnim ninja("resources/objects/ZombieWalk/ZombieWalk.dae");
 	ninja.initShaders(animShader.ID);
 	*/
+	//Carga del soundtrack
+	bool soundtrack = PlaySound("sounds/soundtrack.wav", NULL, SND_ASYNC);
+	
+	
 	//Inicialización de KeyFrames
 	for (int i = 0; i < MAX_FRAMES; i++)
 	{
@@ -406,36 +458,37 @@ int main()
 
 		// don't forget to enable shader before setting uniforms
 		staticShader.use();
-		//Setup Advanced Lights
+				//Setup Advanced Lights
 		staticShader.setVec3("viewPos", camera.Position);
-		staticShader.setVec3("dirLight.direction", lightDirection);
-		staticShader.setVec3("dirLight.ambient", glm::vec3(0.1f, 0.1f, 0.1));
-		staticShader.setVec3("dirLight.diffuse", glm::vec3(1.0f, 1.0, 1.0f));
-		staticShader.setVec3("dirLight.specular", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setVec3("dirLight.direction", glm::vec3(luzSolX, luzSolY, 0.0f));
+		staticShader.setVec3("dirLight.ambient", glm::vec3(0.01f, 0.01f, 0.01f)); //color de la luz principal
+		if (noche == false )
+			staticShader.setVec3("dirLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+		if (noche == true )
+			staticShader.setVec3("dirLight.diffuse", glm::vec3(0.0f, 0.0f, 0.0f));
+		staticShader.setVec3("dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-		staticShader.setVec3("pointLight[0].position", lightPosition);
-		staticShader.setVec3("pointLight[0].ambient", glm::vec3(1.0f, 1.0f, 1.0f));
-		staticShader.setVec3("pointLight[0].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+		staticShader.setVec3("pointLight[0].position", glm::vec3(-84.0f, 24.0f, 79.0f));
+		staticShader.setVec3("pointLight[0].ambient", glm::vec3(1.0f, 1.0f, 0.4));
+		staticShader.setVec3("pointLight[0].diffuse", glm::vec3(1.0f, 1.0f, 0.4f));
 		staticShader.setVec3("pointLight[0].specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setFloat("pointLight[0].constant", 0.0008f);
-		staticShader.setFloat("pointLight[0].linear", 0.0000009f);
-		staticShader.setFloat("pointLight[0].quadratic", 0.032f);
+		staticShader.setFloat("pointLight[0].constant", 1.0f);
+		staticShader.setFloat("pointLight[1].linear", 0.014f);
+		if (prenderFaros == false || cicloFaro == false)
+			staticShader.setFloat("pointLight[0].quadratic", 100.0f); //intensidad
+		if (prenderFaros == true && cicloFaro == true)
+			staticShader.setFloat("pointLight[0].quadratic", 0.0007f); //intensidad
 
-		staticShader.setVec3("pointLight[1].position", glm::vec3(-80.0, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[1].ambient", glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[1].diffuse", glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setVec3("pointLight[1].position", glm::vec3(38.0f, 24.0f, -73.0f));
+		staticShader.setVec3("pointLight[1].ambient", glm::vec3(1.0f, 1.0f, 0.4f));
+		staticShader.setVec3("pointLight[1].diffuse", glm::vec3(1.0f, 1.0f, 0.4f));
 		staticShader.setVec3("pointLight[1].specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setFloat("pointLight[1].constant", 0.00008f);
-		staticShader.setFloat("pointLight[1].linear", 0.00000009f);
-		staticShader.setFloat("pointLight[1].quadratic", 0.0032f);
-
-		staticShader.setVec3("pointLight[2].position", glm::vec3(80.0, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[2].ambient", glm::vec3(0.0f, 0.0f, 1.0f));
-		staticShader.setVec3("pointLight[2].diffuse", glm::vec3(1.0f, 0.0f, 0.0f));
-		staticShader.setVec3("pointLight[2].specular", glm::vec3(0.0f, 0.0f, 0.0f));
-		staticShader.setFloat("pointLight[2].constant", 0.00008f);
-		staticShader.setFloat("pointLight[2].linear", 0.00000009f);
-		staticShader.setFloat("pointLight[2].quadratic", 0.0032f);
+		staticShader.setFloat("pointLight[1].constant", 1.0f);
+		staticShader.setFloat("pointLight[1].linear", 0.014f);
+		if(prenderFaros == true)
+			staticShader.setFloat("pointLight[1].quadratic", 0.0007f); //intensidad
+		if(prenderFaros == false)
+			staticShader.setFloat("pointLight[1].quadratic", 100.0f); //intensidad
 
 		staticShader.setFloat("material_shininess", 32.0f);
 
