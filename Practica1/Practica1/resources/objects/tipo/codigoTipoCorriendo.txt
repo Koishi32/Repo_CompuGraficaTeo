@@ -1,0 +1,385 @@
+//Variables para el tipo corriendo
+float	posXt = 0.0f,
+		posYt = 0.0f,
+		posZt = 0.0f,
+		rotPiernaIzq = 0.0f,
+		rotPiernaDer = 0.0f,
+		rotBrazoIzq = 0.0f,
+		rotManoIzq = 0.0f,
+		rotBrazoDer = 0.0f,
+	    rotManoDer = 0.0f,
+		rotCabeza = 0.0f,
+		giroCuerpo = -90.0f,
+		giroTorso = 0.0f;
+float	incXt = 0.0f,
+		incYt = 0.0f,
+		incZt = 0.0f,
+		rotPIInc = 0.0f,
+		rotPDInc = 0.0f,
+		rotBIInc = 0.0f,
+		rotMIInc = 0.0f,
+		rotBDInc = 0.0f,
+		rotMDInc = 0.0f,
+		rotCInc = 0.0f,
+		giroCuerpoInc = 0.0f,
+		giroTorsoInc = 0.0f;
+
+//Estructura con variables del cuadro clave de tipo corriendo
+#define CUADROS_MAXIMOS 11
+int interpoladasMaximas = 60;
+int pasoActual = 0;
+typedef struct _frame
+{
+	//Variables para GUARDAR Key Frames
+	float posXt;		//Variable para PosicionX
+	float posYt;		//Variable para PosicionY
+	float posZt;		//Variable para PosicionZ
+	float rotPiernaIzq;
+	float rotPiernaDer;
+	float rotBrazoIzq;
+	float rotManoIzq;
+	float rotBrazoDer;
+	float rotManoDer;
+	float rotCabeza;
+	float giroCuerpo;
+	float giroTorso;
+
+}FRAMEX;
+
+//Variables para interpolacion
+FRAMEX cuadroClave[CUADROS_MAXIMOS];
+int indiceCuadro = 11;			//introducir datos
+bool correr = false;
+int playIndice = 0;
+
+//Para resetear los cuadros clave de tipo corriendo
+void resetearElementos(void)
+{
+	posXt = cuadroClave[0].posXt;
+	posYt = cuadroClave[0].posYt;
+	posZt = cuadroClave[0].posZt;
+
+	rotPiernaIzq = cuadroClave[0].rotPiernaIzq;
+	rotPiernaDer = cuadroClave[0].rotPiernaDer;
+	rotBrazoIzq = cuadroClave[0].rotBrazoIzq;
+	rotManoIzq = cuadroClave[0].rotManoIzq;
+	rotBrazoDer = cuadroClave[0].rotBrazoDer;
+	rotManoDer = cuadroClave[0].rotManoDer;
+	rotCabeza = cuadroClave[0].rotCabeza;
+	giroCuerpo = cuadroClave[0].giroCuerpo;
+	giroTorso = cuadroClave[0].giroTorso;
+}
+
+//Interpolacion de tipo corriendo
+void interpolacionCorrer(void)
+{
+	incXt = (cuadroClave[playIndice + 1].posXt - cuadroClave[playIndice].posXt) / interpoladasMaximas;
+	incYt = (cuadroClave[playIndice + 1].posYt - cuadroClave[playIndice].posYt) / interpoladasMaximas;
+	incZt = (cuadroClave[playIndice + 1].posZt - cuadroClave[playIndice].posZt) / interpoladasMaximas;
+
+	rotPIInc = (cuadroClave[playIndice + 1].rotPiernaIzq - cuadroClave[playIndice].rotPiernaIzq) / interpoladasMaximas;
+	rotPDInc = (cuadroClave[playIndice + 1].rotPiernaDer - cuadroClave[playIndice].rotPiernaDer) / interpoladasMaximas;
+	rotBIInc = (cuadroClave[playIndice + 1].rotBrazoIzq - cuadroClave[playIndice].rotBrazoIzq) / interpoladasMaximas;
+	rotMIInc = (cuadroClave[playIndice + 1].rotManoIzq - cuadroClave[playIndice].rotManoIzq) / interpoladasMaximas;
+	rotBDInc = (cuadroClave[playIndice + 1].rotBrazoDer - cuadroClave[playIndice].rotBrazoDer) / interpoladasMaximas;
+	rotMDInc = (cuadroClave[playIndice + 1].rotManoDer - cuadroClave[playIndice].rotManoDer) / interpoladasMaximas;
+	rotCInc = (cuadroClave[playIndice + 1].rotCabeza - cuadroClave[playIndice].rotCabeza) / interpoladasMaximas;
+	giroCuerpoInc = (cuadroClave[playIndice + 1].giroCuerpo - cuadroClave[playIndice].giroCuerpo) / interpoladasMaximas;
+	giroTorsoInc = (cuadroClave[playIndice + 1].giroTorso - cuadroClave[playIndice].giroTorso) / interpoladasMaximas;
+}
+
+//Animacion tipo corriendo
+void tipoCorriendo(void)
+{
+	if (correr)
+	{
+		if (pasoActual >= interpoladasMaximas) //end of animation between frames?
+		{
+			playIndice++;
+			if (playIndice > indiceCuadro - 2)	//end of total animation?
+			{
+				std::cout << "Animation ended" << std::endl;
+				//printf("termina anim\n");
+				playIndice = 0;
+				correr = false;
+			}
+			else //Next frame interpolations
+			{
+				pasoActual = 0; //Reset counter
+								  //Interpolation
+				interpolacionCorrer();
+			}
+		}
+		else
+		{
+			//Draw animation
+			posXt += incXt;
+			posYt += incYt;
+			posZt += incZt;
+
+			rotPiernaIzq += rotPIInc;
+			rotPiernaDer += rotPDInc;
+			rotBrazoIzq += rotBIInc;
+			rotManoIzq += rotMIInc;
+			rotBrazoDer += rotBDInc;
+			rotManoDer += rotMDInc;
+			rotCabeza += rotCInc;
+			giroCuerpo += giroCuerpoInc;
+			giroTorso += giroTorsoInc;
+
+			pasoActual++;
+		}
+	}
+
+//Colocar lo siguiente dentro de main//////////////////////////////////////////////////////////
+
+// Colocar en las referencias a obj
+	Model piernaDer("resources/objects/tipo/piernaDer.obj");
+	Model piernaIzq("resources/objects/tipo/piernaIzq.obj");
+	Model torso("resources/objects/tipo/torso.obj");
+	Model brazoDer("resources/objects/tipo/brazoDer.obj");
+	Model brazoIzq("resources/objects/tipo/brazoIzq.obj");
+	Model manoDer("resources/objects/tipo/manoDer.obj");
+	Model manoIzq("resources/objects/tipo/manoIzq.obj");
+	Model cabeza("resources/objects/tipo/cabeza.obj");
+
+	cuadroClave[0].posXt = 0;
+	cuadroClave[0].posYt = 0;
+	cuadroClave[0].posZt = 0;
+	cuadroClave[0].rotPiernaIzq = 0;
+	cuadroClave[0].rotPiernaDer = 0;
+	cuadroClave[0].rotBrazoIzq = 0;
+	cuadroClave[0].rotManoIzq = 0;
+	cuadroClave[0].rotBrazoDer = 0;
+	cuadroClave[0].rotManoDer = 0;
+	cuadroClave[0].rotCabeza = 0;
+	cuadroClave[0].giroCuerpo = -90.0f;
+	cuadroClave[0].giroTorso = 0.0f;
+
+	cuadroClave[1].posXt = -50.0f;
+	cuadroClave[1].posYt = 0.0f;
+	cuadroClave[1].posZt = 0.0f;
+	cuadroClave[1].rotPiernaIzq = -20.0f;
+	cuadroClave[1].rotPiernaDer = 20.0f;
+	cuadroClave[1].rotBrazoIzq =  20.0f;
+	cuadroClave[1].rotManoIzq = 65.0f;
+	cuadroClave[1].rotBrazoDer = -20.0f;
+	cuadroClave[1].rotManoDer = 25.0f;
+	cuadroClave[1].rotCabeza = 0.0f;
+	cuadroClave[1].giroCuerpo = -90.0f;
+	cuadroClave[1].giroTorso = 0.0f;
+
+	cuadroClave[2].posXt = -125.0f;
+	cuadroClave[2].posYt = 0.0f;
+	cuadroClave[2].posZt = 0.0f;
+	cuadroClave[2].rotPiernaIzq = 30.0f;
+	cuadroClave[2].rotPiernaDer = -30.0f;
+	cuadroClave[2].rotBrazoIzq = -30.0f;
+	cuadroClave[2].rotManoIzq = 15.0f;
+	cuadroClave[2].rotBrazoDer = 30.0f;
+	cuadroClave[2].rotManoDer = 75.0f;
+	cuadroClave[2].rotCabeza = -30.0f;
+	cuadroClave[2].giroCuerpo = -90.0f;
+	cuadroClave[2].giroTorso = 0.0f;
+
+	cuadroClave[3].posXt = -225.0f;
+	cuadroClave[3].posYt = 0.0f;
+	cuadroClave[3].posZt = 0.0f;
+	cuadroClave[3].rotPiernaIzq = -40.0f;
+	cuadroClave[3].rotPiernaDer = 40.0f;
+	cuadroClave[3].rotBrazoIzq = 40.0f;
+	cuadroClave[3].rotManoIzq = 85.0f;
+	cuadroClave[3].rotBrazoDer = -40.0f;
+	cuadroClave[3].rotManoDer = 5.0f;
+	cuadroClave[3].rotCabeza = -60.0f;
+	cuadroClave[3].giroCuerpo = -90.0f;
+	cuadroClave[3].giroTorso = 0.0f;
+
+	cuadroClave[4].posXt = -350.0f;
+	cuadroClave[4].posYt = 0.0f;
+	cuadroClave[4].posZt = 0.0f;
+	cuadroClave[4].rotPiernaIzq = 40.0f;
+	cuadroClave[4].rotPiernaDer = -40.0f;
+	cuadroClave[4].rotBrazoIzq = -40.0f;
+	cuadroClave[4].rotManoIzq = 5.0f;
+	cuadroClave[4].rotBrazoDer = 40.0f;
+	cuadroClave[4].rotManoDer = 85.0f;
+	cuadroClave[4].rotCabeza = -90.0f;
+	cuadroClave[4].giroCuerpo = -90.0f;
+	cuadroClave[4].giroTorso = 0.0f;
+
+	cuadroClave[5].posXt = -500.0f;
+	cuadroClave[5].posYt = 0.0f;
+	cuadroClave[5].posZt = 0.0f;
+	cuadroClave[5].rotPiernaIzq = -40.0f;
+	cuadroClave[5].rotPiernaDer = 40.0f;
+	cuadroClave[5].rotBrazoIzq = 40.0f;
+	cuadroClave[5].rotManoIzq = 85.0f;
+	cuadroClave[5].rotBrazoDer = -40.0f;
+	cuadroClave[5].rotManoDer = 5.0f;
+	cuadroClave[5].rotCabeza = -45.0f;
+	cuadroClave[5].giroCuerpo = -90.0f;
+	cuadroClave[5].giroTorso = 0.0f;
+
+	cuadroClave[6].posXt = -600.0f;
+	cuadroClave[6].posYt= 0.0f;
+	cuadroClave[6].posZt = 0.0f;
+	cuadroClave[6].rotPiernaIzq = 30.0f;
+	cuadroClave[6].rotPiernaDer = -30.0f;
+	cuadroClave[6].rotBrazoIzq = -30.0f;
+	cuadroClave[6].rotManoIzq = 15.0f;
+	cuadroClave[6].rotBrazoDer = 30.0f;
+	cuadroClave[6].rotManoDer = 75;
+	cuadroClave[6].rotCabeza = 0.0f;
+	cuadroClave[6].giroCuerpo = -90.0f;
+	cuadroClave[6].giroTorso = 0.0f;
+	
+	cuadroClave[7].posXt = -675.0f;
+	cuadroClave[7].posYt = 0.0f;
+	cuadroClave[7].posZt = 0.0f;
+	cuadroClave[7].rotPiernaIzq = 0.0f;
+	cuadroClave[7].rotPiernaDer = 0.0f;
+	cuadroClave[7].rotBrazoIzq = 0.0f;
+	cuadroClave[7].rotManoIzq = 0.0f;
+	cuadroClave[7].rotBrazoDer = 0.0f;
+	cuadroClave[7].rotManoDer = 0;
+	cuadroClave[7].rotCabeza = 0.0f;
+	cuadroClave[7].giroCuerpo = -90.0f;
+	cuadroClave[7].giroTorso = 20.0f;
+
+	cuadroClave[8].posXt = -675.0f;
+	cuadroClave[8].posYt = 0.0f;
+	cuadroClave[8].posZt = 0.0f;
+	cuadroClave[8].rotPiernaIzq = 0.0f;
+	cuadroClave[8].rotPiernaDer = 0.0f;
+	cuadroClave[8].rotBrazoIzq = 0.0f;
+	cuadroClave[8].rotManoIzq = 20.0f;
+	cuadroClave[8].rotBrazoDer = 0.0f;
+	cuadroClave[8].rotManoDer = 20.0f;
+	cuadroClave[8].rotCabeza = 0.0f;
+	cuadroClave[8].giroCuerpo = -90.0f;
+	cuadroClave[8].giroTorso = 0.0f;
+
+	cuadroClave[9].posXt = -675.0f;
+	cuadroClave[9].posYt = 0.0f;
+	cuadroClave[9].posZt = 0.0f;
+	cuadroClave[9].rotPiernaIzq = 0.0f;
+	cuadroClave[9].rotPiernaDer = 0.0f;
+	cuadroClave[9].rotBrazoIzq = 10.0f;
+	cuadroClave[9].rotManoIzq = 0.0f;
+	cuadroClave[9].rotBrazoDer = 0.0f;
+	cuadroClave[9].rotManoDer = 10.0f;
+	cuadroClave[9].rotCabeza = 0.0f;
+	cuadroClave[9].giroCuerpo = -90.0f;
+	cuadroClave[9].giroTorso = 20.0f;
+	
+	cuadroClave[10].posXt = -675.0f;
+	cuadroClave[10].posYt = 0.0f;
+	cuadroClave[10].posZt = 0.0f;
+	cuadroClave[10].rotPiernaIzq = 0.0f;
+	cuadroClave[10].rotPiernaDer = 0.0f;
+	cuadroClave[10].rotBrazoIzq = 0.0f;
+	cuadroClave[10].rotManoIzq = 0.0f;
+	cuadroClave[10].rotBrazoDer = 0.0f;
+	cuadroClave[10].rotManoDer = 0;
+	cuadroClave[10].rotCabeza = 0.0f;
+	cuadroClave[10].giroCuerpo = -90.0f;
+	cuadroClave[10].giroTorso = 0.0f;
+
+//poner dentro de while (!glfwWindowShouldClose(window))
+tipoCorriendo()
+
+//Poner despues de la declaración de model
+		glm::mat4 tmp1 = glm::mat4(1.0f);
+		glm::mat4 tmp2 = glm::mat4(1.0f);
+		glm::mat4 tmp3 = glm::mat4(1.0f);
+		glm::mat4 tmp4 = glm::mat4(1.0f);
+
+//Poner donde se dibujan los elementos del escenario
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Tipo Corriendo
+		// -------------------------------------------------------------------------------------------------------------------------
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(8.0, -0.45f, -11.0f));
+		model = glm::scale(model, glm::vec3(0.016f));
+		model = glm::translate(model, glm::vec3(posX, posY, posZ));
+		tmp1 = model = glm::rotate(model, glm::radians(giroCuerpo), glm::vec3(0.0f, 1.0f, 0.0));
+		tmp4 =  model = glm::rotate(model, glm::radians(giroTorso), glm::vec3(1.0f, 0.0f, 0.0));
+		staticShader.setMat4("model", model);
+		torso.Draw(staticShader);
+
+		//Pierna Der
+		model = glm::translate(tmp1, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::rotate(model, glm::radians(-rotPiernaDer), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", model);
+		piernaDer.Draw(staticShader);
+		
+		//Pierna Izq
+		model = glm::translate(tmp1, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-rotPiernaIzq), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", model);
+		piernaIzq.Draw(staticShader);
+
+		//Brazo derecho
+		model = glm::translate(tmp4, glm::vec3(-22.0f, 50.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp2 = model = glm::rotate(model, glm::radians(-rotBrazoDer), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", model);
+		brazoDer.Draw(staticShader);
+
+		//Mano derecha
+		model = glm::translate(tmp2, glm::vec3(-9.0f, -15.0f, 2.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-rotManoDer), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", model);
+		manoDer.Draw(staticShader);
+
+		//Brazo izquierdo
+		model = glm::translate(tmp4, glm::vec3(23.0f, 50.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp3 = model = glm::rotate(model, glm::radians(-rotBrazoIzq), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", model);
+		brazoIzq.Draw(staticShader);
+
+		//Mano izquierda
+		model = glm::translate(tmp3, glm::vec3(5.0f, -18.0f, 2.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-rotManoIzq), glm::vec3(1.0f, 0.0f, 0.0f));
+		staticShader.setMat4("model", model);
+		manoIzq.Draw(staticShader);
+
+		//Cabeza
+		model = glm::translate(tmp4, glm::vec3(0.0f, 62.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::rotate(model, glm::radians(-rotCabeza), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 2.5f, 0));
+		staticShader.setMat4("model", model);
+		cabeza.Draw(staticShader);
+		
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Termina tipo corriendo
+		// -------------------------------------------------------------------------------------------------------------------------
+
+//Poner en la seccion para oprimir teclas
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+	{
+		if (correr == false && (indiceCuadro > 1))
+		{
+			std::cout << "Play animation" << std::endl;
+			resetearElementos();
+			//First Interpolation				
+			interpolacionCorrer();
+
+			correr = true;
+			playIndice = 0;
+			pasoActual = 0;
+		}
+		else
+		{
+			correr = false;
+			std::cout << "Not enough Key Frames" << std::endl;
+		}
+	}
