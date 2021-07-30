@@ -36,6 +36,7 @@ void my_input(GLFWwindow* window, int key, int scancode, int action, int mods);
 void animate(void);
 void tipoCorriendo(void);
 void AVE_VOLANDO(void);
+void palmera(void);
 // settings
 unsigned int SCR_WIDTH = 800;
 unsigned int SCR_HEIGHT = 600;
@@ -146,6 +147,98 @@ ROTALA_IZQ_INC = 0.0f;
 #define CUADROS_MAXIMOS_AVE 9
 int interpoladasMaximas_AVE = 60;
 int pasoActualAVE = 0;
+
+//Variables palmera
+float	rotBasePalma = 0.0f,
+rotMitadPalma = 0.0f,
+rotCopaPalma = 0.0f,
+caidaCopa = 0.0f,
+posXCopa = 0.0f,
+posXCopaInc = 0.0f,
+caidaCopaInc = 0.0f,
+rotBPInc = 0.0f,
+rotMPInc = 0.0f,
+rotCPInc = 0.0f;
+
+#define CUADROS_PALMA_MAXIMOS 18
+int interpoladasMaximasP = 60;
+int pasoActualP = 0;
+typedef struct _framep
+{
+	//Variables para GUARDAR Key Frames
+
+	float rotBasePalma;
+	float rotMitadPalma;
+	float rotCopaPalma;
+	float caidaCopa;
+	float posXCopa;
+
+}FRAMEP;
+
+FRAMEP cuadroClaveP[CUADROS_PALMA_MAXIMOS];
+int indiceCuadroP = 15;			//introducir datos
+bool agitarse = false;
+int playIndiceP = 0;
+
+//More palmera animation
+
+
+void resetearElementosP(void)
+{
+	rotBasePalma = cuadroClaveP[0].rotBasePalma;
+	rotMitadPalma = cuadroClaveP[0].rotMitadPalma;
+	rotCopaPalma = cuadroClaveP[0].rotCopaPalma;
+	caidaCopa = cuadroClaveP[0].caidaCopa;
+	posXCopa = cuadroClaveP[0].posXCopa;
+}
+
+void interpolacionAgitarse(void)
+{
+	rotBPInc = (cuadroClaveP[playIndiceP + 1].rotBasePalma - cuadroClaveP[playIndiceP].rotBasePalma) / interpoladasMaximasP;
+	rotMPInc = (cuadroClaveP[playIndiceP + 1].rotMitadPalma - cuadroClaveP[playIndiceP].rotMitadPalma) / interpoladasMaximasP;
+	rotCPInc = (cuadroClaveP[playIndiceP + 1].rotCopaPalma - cuadroClaveP[playIndiceP].rotCopaPalma) / interpoladasMaximasP;
+	caidaCopaInc = (cuadroClaveP[playIndiceP + 1].caidaCopa - cuadroClaveP[playIndiceP].caidaCopa) / interpoladasMaximasP;
+	posXCopaInc = (cuadroClaveP[playIndiceP + 1].posXCopa - cuadroClaveP[playIndiceP].posXCopa) / interpoladasMaximasP;
+}
+
+void palmera(void)
+{
+	if (agitarse)
+	{
+		if (pasoActualP >= interpoladasMaximasP) //end of animation between frames?
+		{
+			playIndiceP++;
+			if (playIndiceP > indiceCuadroP - 2)	//end of total animation?
+			{
+				std::cout << "Animation ended" << std::endl;
+				//printf("termina anim\n");
+				playIndiceP = 0;
+				agitarse = false;
+			}
+			else //Next frame interpolations
+			{
+				pasoActualP = 0; //Reset counter
+								//Interpolation
+				interpolacionAgitarse();
+			}
+		}
+		else
+		{
+			//Draw animation
+			rotBasePalma += rotBPInc;
+			rotMitadPalma += rotMPInc;
+			rotCopaPalma += rotCPInc;
+			caidaCopa += caidaCopaInc;
+			posXCopa += posXCopaInc;
+
+			pasoActualP++;
+		}
+	}
+
+}
+
+//More AVE animanation
+
 typedef struct _frame_AVE
 {
 	//Variables para GUARDAR Key Frames
@@ -564,6 +657,103 @@ int main()
 	Model manoIzq("resources/objects/tipo/manoIzq.obj");
 	Model cabeza("resources/objects/tipo/cabeza.obj");
 
+	//Palmeras
+	Model basePalma("resources/objects/palmas/basePalma.obj");
+	Model mitadPalma("resources/objects/palmas/mitadPalma.obj");
+	Model copaPalma("resources/objects/palmas/copaPalma.obj");
+
+	/// Cuadro clave pamera
+	cuadroClaveP[0].rotBasePalma = 0.0f;
+	cuadroClaveP[0].rotMitadPalma = 0.0f;
+	cuadroClaveP[0].rotCopaPalma = 0.0f;
+	cuadroClaveP[0].caidaCopa = 0.0f;
+	cuadroClaveP[0].posXCopa = 0.0f;
+
+
+	cuadroClaveP[1].rotBasePalma = 0.5f;
+	cuadroClaveP[1].rotMitadPalma = 1.0f;
+	cuadroClaveP[1].rotCopaPalma = 1.5f;
+	cuadroClaveP[1].caidaCopa = 0.0f;
+	cuadroClaveP[1].posXCopa = 0.0f;
+
+	cuadroClaveP[2].rotBasePalma = -0.5f;
+	cuadroClaveP[2].rotMitadPalma = -1.5f;
+	cuadroClaveP[2].rotCopaPalma = -2.5f;
+	cuadroClaveP[2].caidaCopa = 0.0f;
+	cuadroClaveP[2].posXCopa = 0.0f;
+
+	cuadroClaveP[3].rotBasePalma = 1.0f;
+	cuadroClaveP[3].rotMitadPalma = 2.5f;
+	cuadroClaveP[3].rotCopaPalma = 4.0f;
+	cuadroClaveP[3].caidaCopa = 0.0f;
+	cuadroClaveP[3].posXCopa = 0.0f;
+
+	cuadroClaveP[4].rotBasePalma = -1.0f;
+	cuadroClaveP[4].rotMitadPalma = -3.0f;
+	cuadroClaveP[4].rotCopaPalma = -5.0f;
+	cuadroClaveP[4].caidaCopa = 0.0f;
+	cuadroClaveP[4].posXCopa = 0.0f;
+
+	cuadroClaveP[5].rotBasePalma = 1.5f;
+	cuadroClaveP[5].rotMitadPalma = 4.0f;
+	cuadroClaveP[5].rotCopaPalma = 6.5f;
+	cuadroClaveP[5].caidaCopa = 0.0f;
+	cuadroClaveP[5].posXCopa = 0.0f;
+
+	cuadroClaveP[6].rotBasePalma = -1.5f;
+	cuadroClaveP[6].rotMitadPalma = -4.5f;
+	cuadroClaveP[6].rotCopaPalma = -7.5f;
+	cuadroClaveP[6].caidaCopa = 0.0f;
+	cuadroClaveP[6].posXCopa = 0.0f;
+
+	cuadroClaveP[7].rotBasePalma = 2.0f;
+	cuadroClaveP[7].rotMitadPalma = 5.5f;
+	cuadroClaveP[7].rotCopaPalma = 9.0f;
+	cuadroClaveP[7].caidaCopa = 0.0f;
+	cuadroClaveP[7].posXCopa = 0.0f;
+
+	cuadroClaveP[8].rotBasePalma = -2.0f;
+	cuadroClaveP[8].rotMitadPalma = -6.0f;
+	cuadroClaveP[8].rotCopaPalma = -10.0f;
+	cuadroClaveP[8].caidaCopa = 0.0f;
+	cuadroClaveP[8].posXCopa = 0.0f;
+
+	cuadroClaveP[9].rotBasePalma = 2.5f;
+	cuadroClaveP[9].rotMitadPalma = 7.0f;
+	cuadroClaveP[9].rotCopaPalma = 11.5f;
+	cuadroClaveP[9].caidaCopa = 0.0f;
+	cuadroClaveP[9].posXCopa = 0.0f;
+
+	cuadroClaveP[10].rotBasePalma = -2.5f;
+	cuadroClaveP[10].rotMitadPalma = -7.5f;
+	cuadroClaveP[10].rotCopaPalma = -12.5f;
+	cuadroClaveP[10].caidaCopa = 0.0f;
+	cuadroClaveP[10].posXCopa = 0.0f;
+
+	cuadroClaveP[11].rotBasePalma = 3.0f;
+	cuadroClaveP[11].rotMitadPalma = 8.5f;
+	cuadroClaveP[11].rotCopaPalma = 14.0f;
+	cuadroClaveP[11].caidaCopa = 0.0f;
+	cuadroClaveP[11].posXCopa = 0.0f;
+
+	cuadroClaveP[12].rotBasePalma = -3.0f;
+	cuadroClaveP[12].rotMitadPalma = -9.0f;
+	cuadroClaveP[12].rotCopaPalma = 12.0f;
+	cuadroClaveP[12].caidaCopa = -27.0f;
+	cuadroClaveP[12].posXCopa = -6.8f;
+
+	cuadroClaveP[13].rotBasePalma = 0.0f;
+	cuadroClaveP[13].rotMitadPalma = 0.0f;
+	cuadroClaveP[13].rotCopaPalma = 0.0f;
+	cuadroClaveP[13].caidaCopa = -27.0f;
+	cuadroClaveP[13].posXCopa = -9.0f;
+
+	cuadroClaveP[14].rotBasePalma = 0.0f;
+	cuadroClaveP[14].rotMitadPalma = 0.0f;
+	cuadroClaveP[14].rotCopaPalma = 90.0f;
+	cuadroClaveP[14].caidaCopa = -27.0f;
+	cuadroClaveP[14].posXCopa = -9.0f;
+	//cuandro clave coche
 	cuadroClave[0].posXt = 0;
 	cuadroClave[0].posYt = 0;
 	cuadroClave[0].posZt = 0;
@@ -760,7 +950,7 @@ int main()
 	{
 		tipoCorriendo();
 		AVE_VOLANDO();
-
+		palmera();
 		
 		skyboxShader.setInt("skybox", 0);
 
@@ -900,7 +1090,28 @@ int main()
 		model = glm::scale(model, glm::vec3(5.0f));
 		staticShader.setMat4("model", model);
 		casaVieja.Draw(staticShader);*/
+		///
+		//PALMERA MODEL 
 
+		glm::mat4 tmp5 = glm::mat4(1.0f);
+		glm::mat4 tmp6 = glm::mat4(1.0f);
+
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(16.0f, -22.0f,103.0f));
+		model = glm::rotate(model, glm::radians(rotBasePalma), glm::vec3(0.0f, 0.0f, 1.0));
+		tmp5 = model = glm::scale(model, glm::vec3(1.0f));
+		staticShader.setMat4("model", model);
+		basePalma.Draw(staticShader);
+		//Mitad
+		model = glm::translate(tmp5, glm::vec3(0.2f, 16.5f, 0.0f));
+		tmp6 = model = glm::rotate(model, glm::radians(rotMitadPalma), glm::vec3(0.0f, 0.0f, 1.0));
+		staticShader.setMat4("model", model);
+		mitadPalma.Draw(staticShader);
+		//Copa
+		model = glm::translate(tmp6, glm::vec3(3.5f, 11.5, 0.0f));
+		model = glm::translate(model, glm::vec3(posXCopa, caidaCopa, 0.0f));
+		model = glm::rotate(model, glm::radians(rotCopaPalma), glm::vec3(0.0f, 0.0f, 1.0));
+		staticShader.setMat4("model", model);
+		copaPalma.Draw(staticShader);
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Carro
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -1126,6 +1337,26 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 			paso = 0;
 			orienta = 90.0f;
 			animacion = false;
+		}
+	}
+
+	if (key == GLFW_KEY_O && action == GLFW_PRESS)
+	{
+		if (agitarse == false && (indiceCuadroP > 1))
+		{
+			std::cout << "Play animation" << std::endl;
+			resetearElementosP();
+			//First Interpolation				
+			interpolacionAgitarse();
+
+			agitarse = true;
+			playIndiceP = 0;
+			pasoActualP = 0;
+		}
+		else
+		{
+			agitarse = false;
+			std::cout << "Not enough Key Frames" << std::endl;
 		}
 	}
 	//To play KeyFrame animation 
