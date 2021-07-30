@@ -1,7 +1,12 @@
 /*---------------------------------------------------------*/
-/* ----------------  Práctica Animación (6) -----------*/
+/* ----------------  Proyecto Computacion Grafica -----------*/
 /*-----------------    2021-2   ---------------------------*/
-/*------------- Alumno: Leyva Diaz Alejandro Ivan ---------------*/
+/*------------- Alumnos ---------------*/
+//
+//
+//
+//
+//
 #include <Windows.h>
 
 #include <glad/glad.h>
@@ -102,6 +107,9 @@ rotInc = 0.0f,
 giroMonitoInc = 0.0f,
 movBrazoIzqInc = 0.0f;
 
+
+//variables Gun
+float gun_x,gun_y;
 //VARIABLES TIPO
 float	posXt = 0.0f,
 posYt = 0.0f,
@@ -433,6 +441,9 @@ void tipoCorriendo(void)
 	}
 }
 int paso = 0;
+float gun_varX=-0.04f;
+float gun_varY = 0.01f;
+float tempa = 0.0f;
 void animate(void)
 {
 
@@ -555,6 +566,19 @@ void animate(void)
 	AVE_Y = 0 + (30.0f*sin((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
 	AVE_Z = 0 + (100.0f*cos((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
 	GIROROT_AVE -= 0.2f;
+
+	//AnimaGun
+	
+	gun_x += gun_varX;
+	gun_y += gun_varY/2;
+	if (gun_x >0.3f) {
+		gun_varX = (-0.018f);
+		gun_varY = 0.018f;
+	}
+	else if (gun_x < -0.3f) {
+		gun_varX = 0.013f;
+		gun_varY = -0.013f;
+	}
 }
 
 void getResolution()
@@ -661,7 +685,10 @@ int main()
 	Model basePalma("resources/objects/palmas/basePalma.obj");
 	Model mitadPalma("resources/objects/palmas/mitadPalma.obj");
 	Model copaPalma("resources/objects/palmas/copaPalma.obj");
-
+	Model gun("resources/shoot/ColtPythonTest.obj");
+	//shooting
+	ModelAnim CHAR1("resources/shoot/Shooting.dae");
+	CHAR1.initShaders(animShader.ID);
 	/// Cuadro clave pamera
 	cuadroClaveP[0].rotBasePalma = 0.0f;
 	cuadroClaveP[0].rotMitadPalma = 0.0f;
@@ -753,7 +780,7 @@ int main()
 	cuadroClaveP[14].rotCopaPalma = 90.0f;
 	cuadroClaveP[14].caidaCopa = -27.0f;
 	cuadroClaveP[14].posXCopa = -9.0f;
-	//cuandro clave coche
+	//cuandro clave tipo
 	cuadroClave[0].posXt = 0;
 	cuadroClave[0].posYt = 0;
 	cuadroClave[0].posZt = 0;
@@ -767,7 +794,7 @@ int main()
 	cuadroClave[0].giroCuerpo = -90.0f;
 	cuadroClave[0].giroTorso = 0.0f;
 
-	cuadroClave[1].posXt =-20.0f;
+	cuadroClave[1].posXt =20.0f;
 	cuadroClave[1].posYt = 0.0f;
 	cuadroClave[1].posZt = 0.0f;
 	cuadroClave[1].rotPiernaIzq = -20.0f;
@@ -780,7 +807,7 @@ int main()
 	cuadroClave[1].giroCuerpo = -90.0f;
 	cuadroClave[1].giroTorso = 0.0f;
 
-	cuadroClave[2].posXt = -40.0f;
+	cuadroClave[2].posXt = 40.0f;
 	cuadroClave[2].posYt = 0.0f;
 	cuadroClave[2].posZt = 0.0f;
 	cuadroClave[2].rotPiernaIzq = 30.0f;
@@ -793,7 +820,7 @@ int main()
 	cuadroClave[2].giroCuerpo = -90.0f;
 	cuadroClave[2].giroTorso = 0.0f;
 
-	cuadroClave[3].posXt = -60.0f;
+	cuadroClave[3].posXt = 60.0f;
 	cuadroClave[3].posYt = 0.0f;
 	cuadroClave[3].posZt = 0.0f;
 	cuadroClave[3].rotPiernaIzq = -120.0f;
@@ -806,7 +833,7 @@ int main()
 	cuadroClave[3].giroCuerpo = -90.0f;
 	cuadroClave[3].giroTorso = 0.0f;
 
-	cuadroClave[4].posXt = -80.0f;
+	cuadroClave[4].posXt = 80.0f;
 	cuadroClave[4].posYt = 0.0f;
 	cuadroClave[4].posZt = 0.0f;
 	cuadroClave[4].rotPiernaIzq = 40.0f;
@@ -819,7 +846,7 @@ int main()
 	cuadroClave[4].giroCuerpo = -90.0f;
 	cuadroClave[4].giroTorso = 0.0f;
 
-	cuadroClave[5].posXt = -100.0f;
+	cuadroClave[5].posXt = 100.0f;
 	cuadroClave[5].posYt = 0.0f;
 	cuadroClave[5].posZt = 0.0f;
 	cuadroClave[5].rotPiernaIzq = -40.0f;
@@ -832,7 +859,7 @@ int main()
 	cuadroClave[5].giroCuerpo = -90.0f;
 	cuadroClave[5].giroTorso = 0.0f;
 
-	cuadroClave[6].posXt = -110.0f;
+	cuadroClave[6].posXt = 110.0f;
 	cuadroClave[6].posYt = 0.0f;
 	cuadroClave[6].posZt = 0.0f;
 	cuadroClave[6].rotPiernaIzq = 30.0f;
@@ -845,7 +872,7 @@ int main()
 	cuadroClave[6].giroCuerpo = -90.0f;
 	cuadroClave[6].giroTorso = 0.0f;
 
-	cuadroClave[7].posXt = -120.0f;
+	cuadroClave[7].posXt = 120.0f;
 	cuadroClave[7].posYt = 0.0f;
 	cuadroClave[7].posZt = 0.0f;
 	cuadroClave[7].rotPiernaIzq = 0.0f;
@@ -858,7 +885,7 @@ int main()
 	cuadroClave[7].giroCuerpo = -90.0f;
 	cuadroClave[7].giroTorso = 20.0f;
 
-	cuadroClave[8].posXt = -120.0f;
+	cuadroClave[8].posXt = 120.0f;
 	cuadroClave[8].posYt = 0.0f;
 	cuadroClave[8].posZt = 0.0f;
 	cuadroClave[8].rotPiernaIzq = 0.0f;
@@ -871,7 +898,7 @@ int main()
 	cuadroClave[8].giroCuerpo = -90.0f;
 	cuadroClave[8].giroTorso = 0.0f;
 
-	cuadroClave[9].posXt = -120.0f;
+	cuadroClave[9].posXt = 120.0f;
 	cuadroClave[9].posYt = 0.0f;
 	cuadroClave[9].posZt = 0.0f;
 	cuadroClave[9].rotPiernaIzq = 0.0f;
@@ -884,7 +911,7 @@ int main()
 	cuadroClave[9].giroCuerpo = -90.0f;
 	cuadroClave[9].giroTorso = 20.0f;
 
-	cuadroClave[10].posXt = -120.0f;
+	cuadroClave[10].posXt = 120.0f;
 	cuadroClave[10].posYt = 0.0f;
 	cuadroClave[10].posZt = 0.0f;
 	cuadroClave[10].rotPiernaIzq = 0.0f;
@@ -1045,6 +1072,13 @@ int main()
 		animShader.setVec3("light.direction", lightDirection);
 		animShader.setVec3("viewPos", camera.Position);
 
+		//Shooting
+		glm::mat4 tempGun = glm::mat4(1.0f);
+		tempGun=model = glm::translate(glm::mat4(1.0f), glm::vec3(-52.0f, -22.0f,-145.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.08f));	// it's a bit too big for our scene, so scale it down
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		animShader.setMat4("model", model);
+		CHAR1.Draw(animShader);
 		/*
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-40.3f, 1.75f, 0.3f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.2f));	// it's a bit too big for our scene, so scale it down
@@ -1091,6 +1125,12 @@ int main()
 		staticShader.setMat4("model", model);
 		casaVieja.Draw(staticShader);*/
 		///
+		//Gun tempGun
+		model = glm::translate(tempGun, glm::vec3(5.8f + gun_x, 10.0f +gun_y, 1.25f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::scale(model, glm::vec3(0.17f));
+		staticShader.setMat4("model", model);
+		gun.Draw(staticShader);
 		//PALMERA MODEL 
 
 		glm::mat4 tmp5 = glm::mat4(1.0f);
@@ -1185,8 +1225,8 @@ int main()
 
 		/// ------------------
 		//DRAWN TIPO 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(120.0+ posXt, -16.0f+posYt, -140.0f+posZt));
-		model = glm::scale(model, glm::vec3(0.085f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-30.0+ posXt, -16.0f+posYt, -145.0f+posZt));
+		model = glm::scale(model, glm::vec3(-0.085f,0.085f,0.085f));
 		//model = glm::translate(model, glm::vec3(posX, posY, posZ));
 		tmp1 = model = glm::rotate(model, glm::radians(giroCuerpo), glm::vec3(0.0f, 1.0f, 0.0));
 		tmp4 = model = glm::rotate(model, glm::radians(giroTorso), glm::vec3(1.0f, 0.0f, 0.0));
