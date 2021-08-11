@@ -144,6 +144,8 @@ ROTOALA_DER = 0.0f,
 ROT_CUERPO_AVE = 0.0f,
 ROT_CUERPO_AVE_X = 0.0f,
 ROTALA_IZQ = 0.0f;
+
+float EAGLE_DER_ALA_UP = 0, EAGLE_IZQ_ALA_UP=0;
 //AVE INCREMENTO
 float	AVE_X_INC = 0.0f,
 AVE_Y_INC = 0.0f,
@@ -444,6 +446,7 @@ int paso = 0;
 float gun_varX=-0.04f;
 float gun_varY = 0.01f;
 float tempa = 0.0f;
+float temp_upAguila=0.01f;
 void animate(void)
 {
 
@@ -567,6 +570,14 @@ void animate(void)
 	AVE_Z = 0 + (100.0f*cos((GIROROT_AVE*3.1416f / 180.0f) + (90 * 3.1416f / 180.0f)));
 	GIROROT_AVE -= 0.2f;
 
+	EAGLE_IZQ_ALA_UP += temp_upAguila;
+	EAGLE_DER_ALA_UP += temp_upAguila;
+	if (EAGLE_IZQ_ALA_UP >= 0.25f || EAGLE_IZQ_ALA_UP >= 0.25f) {
+		temp_upAguila = -0.01f;
+	}
+	if (EAGLE_IZQ_ALA_UP <= -0.15f || EAGLE_IZQ_ALA_UP <= -0.15f) {
+		temp_upAguila = 0.01f;
+	}
 	//AnimaGun
 	
 	gun_x += gun_varX;
@@ -930,20 +941,20 @@ int main()
 	glm::mat4 tmp4 = glm::mat4(1.0f);
 
 	/// SET UPP FRAMES AVE
-	cuadroClaveAVE[0].ROTOALA_DER = 25.0f;
-	cuadroClaveAVE[0].ROTALA_IZQ = 25.0f;
+	cuadroClaveAVE[0].ROTOALA_DER = 35.0f;
+	cuadroClaveAVE[0].ROTALA_IZQ = 35.0f;
 	cuadroClaveAVE[0].ROT_CUERPO_AVE_X = 15.0f;
 
 	cuadroClaveAVE[1].ROTOALA_DER = 20.0f;
 	cuadroClaveAVE[1].ROTALA_IZQ = 20.0f;
 	cuadroClaveAVE[1].ROT_CUERPO_AVE_X = 5.0f;
 	
-	cuadroClaveAVE[2].ROTOALA_DER = 10.0f;
-	cuadroClaveAVE[2].ROTALA_IZQ = 10.0f;
+	cuadroClaveAVE[2].ROTOALA_DER = 5.0f;
+	cuadroClaveAVE[2].ROTALA_IZQ = 5.0f;
 	cuadroClaveAVE[2].ROT_CUERPO_AVE_X = 0.0f;
 
-	cuadroClaveAVE[3].ROTOALA_DER = -10.0f;
-	cuadroClaveAVE[3].ROTALA_IZQ = -10.0f;
+	cuadroClaveAVE[3].ROTOALA_DER = 0.0f;
+	cuadroClaveAVE[3].ROTALA_IZQ = 0.0f;
 	cuadroClaveAVE[3].ROT_CUERPO_AVE_X = -10.0f;
 
 	cuadroClaveAVE[4].ROTOALA_DER = 5.0f;
@@ -958,8 +969,8 @@ int main()
 	cuadroClaveAVE[6].ROTALA_IZQ =20.0f;
 	cuadroClaveAVE[6].ROT_CUERPO_AVE_X = 5.0f;
 	
-	cuadroClaveAVE[7].ROTOALA_DER = 25.0f;
-	cuadroClaveAVE[7].ROTALA_IZQ = 25.0f;
+	cuadroClaveAVE[7].ROTOALA_DER = 35.0f;
+	cuadroClaveAVE[7].ROTALA_IZQ = 35.0f;
 	cuadroClaveAVE[7].ROT_CUERPO_AVE_X = 15.0f;
 	
 
@@ -1206,18 +1217,19 @@ int main()
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Aguila
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f +AVE_X, 70.0f+AVE_Y, 0.0f+AVE_Z));
+		//model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f , 70.0f , 0.0f ));
 		model = glm::rotate(model, glm::radians(ROT_CUERPO_AVE_X), glm::vec3(0.0f, 0.0f, 1.0));
 		tmp = model = glm::rotate(model, glm::radians(GIROROT_AVE), glm::vec3(0.0f, 1.0f, 0.0));
 		staticShader.setMat4("model", model);
 		cuerpo.Draw(staticShader);
 		//Ala derecho 
-		model = glm::translate(tmp, glm::vec3(0.3f,-0.1f, 0.0f));
+		model = glm::translate(tmp, glm::vec3(0.45f,-0.1f + EAGLE_DER_ALA_UP, 0.0f));
 		model = glm::rotate(model, glm::radians(ROTOALA_DER), glm::vec3(0.0f, 0.0f,1.0f));
 		staticShader.setMat4("model", model);
 		AlaDerecha.Draw(staticShader);
 
 		//Ala izquierdo 
-		model = glm::translate(tmp, glm::vec3(-0.4f, -0.1f, 0.0f));
+		model = glm::translate(tmp, glm::vec3(-0.45f, -0.1f + EAGLE_DER_ALA_UP, 0.0f));
 		model = glm::rotate(model, glm::radians(ROTALA_IZQ), glm::vec3(0.0f, 0.0f,1.0f));
 		staticShader.setMat4("model", model);
 		AlaIzquierda.Draw(staticShader);
