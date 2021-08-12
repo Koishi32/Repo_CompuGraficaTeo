@@ -110,6 +110,8 @@ movBrazoIzqInc = 0.0f;
 
 //variables Gun
 float gun_x,gun_y;
+
+float Gun_X_Incre,GUN_Y_Incre;
 //VARIABLES TIPO
 float	posXt = 0.0f,
 posYt = 0.0f,
@@ -301,7 +303,7 @@ void AVE_VOLANDO(void)
 		if (pasoActualAVE >= interpoladasMaximas_AVE) //end of animation between frames?
 		{
 			playIndiceAVE++;
-			if (playIndiceAVE > indiceCuadroAVE)	//end of total animation?
+			if (playIndiceAVE > indiceCuadroAVE -2)	//end of total animation?
 			{
 				std::cout << "Animation ended" << std::endl;
 				//printf("termina anim\n");
@@ -447,6 +449,8 @@ float gun_varX=-0.04f;
 float gun_varY = 0.01f;
 float tempa = 0.0f;
 float temp_upAguila=0.01f;
+float EsperaINC=0.04f;
+float Espera_Gun=0.0f;
 void animate(void)
 {
 
@@ -579,7 +583,7 @@ void animate(void)
 		temp_upAguila = 0.01f;
 	}
 	//AnimaGun
-	
+	Espera_Gun += EsperaINC;
 	gun_x += gun_varX;
 	gun_y += gun_varY/2;
 	if (gun_x >0.3f) {
@@ -590,6 +594,8 @@ void animate(void)
 		gun_varX = 0.013f;
 		gun_varY = -0.013f;
 	}
+
+
 }
 
 void getResolution()
@@ -1166,7 +1172,7 @@ int main()
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Carro
 		// -------------------------------------------------------------------------------------------------------------------------
-		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 2.5f, 0.0f));
 		model = glm::translate(model, glm::vec3(-200.0f + movAuto_x, -24.0f + movAuto_y, -55.0f + movAuto_z));
 		tmp = model = glm::rotate(model, glm::radians(orienta), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
